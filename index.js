@@ -11,6 +11,15 @@ const client = new WebflowClient({
   accessToken: process.env.WEBFLOW_ACCESS_TOKEN,
 });
 
+
+
+
+app.get("/form-submit", async (req, res) => {
+  console.log(req)
+
+})
+
+
 app.get("/cms-items/:collection_id", async (req, res) => {
     const { collection_id } = req.params;
   // const collection_id = "679a175129b5b3c237e7193e";
@@ -28,6 +37,9 @@ app.get("/cms-items/:collection_id", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch CMS items" });
   }
 });
+
+
+
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
