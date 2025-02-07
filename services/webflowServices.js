@@ -5,10 +5,13 @@ const client = new WebflowClient({
   accessToken: webflowAccessToken,
 });
 
-const fetchCollectionItems = async (collectionId) => {
+const fetchCollectionItems = async (collectionId, userEmail) => {
   const response = await client.collections.items.listItemsLive(collectionId);
+  if (userEmail) {
+    return response.items.filter((item) => item.fieldData["parent-email"] === userEmail);
+  }
   return response.items;
-};
+};  
 
 const getUserInfoWebflow = async (siteId, userId) => {
   const response = await client.users.get(siteId, userId);
@@ -16,8 +19,15 @@ const getUserInfoWebflow = async (siteId, userId) => {
 };
 
 const addRegistrationWebflow = async (collection_id, registrationData) => {
-  const response = await client.collections.items.createItemLive(collection_id, registrationData)
-  return response
-}
+  const response = await client.collections.items.createItemLive(
+    collection_id,
+    registrationData
+  );
+  return response;
+};
 
-module.exports = { fetchCollectionItems, getUserInfoWebflow, addRegistrationWebflow };
+module.exports = {
+  fetchCollectionItems,
+  getUserInfoWebflow,
+  addRegistrationWebflow,
+};

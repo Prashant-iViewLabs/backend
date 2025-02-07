@@ -2,9 +2,10 @@ const webflowService = require("../services/webflowServices");
 
 const getCmsItems = async (req, res) => {
   const { collection_id } = req.params;
-
+  const userEmail = req.headers["useremail"]
+  console.log("User email:", userEmail);
   try {
-    const items = await webflowService.fetchCollectionItems(collection_id);
+    const items = await webflowService.fetchCollectionItems(collection_id, userEmail);
     res.json(items);
   } catch (error) {
     console.error("Error fetching CMS items:", error);
