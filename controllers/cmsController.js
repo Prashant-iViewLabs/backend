@@ -3,7 +3,6 @@ const webflowService = require("../services/webflowServices");
 const getCmsItems = async (req, res) => {
   const { collection_id } = req.params;
   const userEmail = req.headers["useremail"]
-  console.log("User email:", userEmail);
   try {
     const items = await webflowService.fetchCollectionItems(collection_id, userEmail);
     res.json(items);
@@ -16,7 +15,6 @@ const getCmsItems = async (req, res) => {
 const addRegistration = async (req, res) => {
   const { collection_id } = req.params;
   const { body } = req;
-  console.log("Request body:", body);
   try {
     // Add registration logic here
     const response = await webflowService.addRegistrationWebflow(collection_id, body);
@@ -29,7 +27,6 @@ const addRegistration = async (req, res) => {
 
 const getUserInfo = async (req, res) => {
   const { userid } = req.headers; // Ensure lowercase
-  console.log(process.env.SITE_ID, userid);
 
   try {
     const user = await webflowService.getUserInfoWebflow(
