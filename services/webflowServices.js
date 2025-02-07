@@ -15,4 +15,9 @@ const getUserInfoWebflow = async (siteId, userId) => {
   return response;
 };
 
-module.exports = { fetchCollectionItems, getUserInfoWebflow };
+const addRegistrationWebflow = async (collection_id, registrationData) => {
+  const response = await client.collections.items.createItemLive(collection_id, registrationData)
+  return response
+}
+
+module.exports = { fetchCollectionItems, getUserInfoWebflow, addRegistrationWebflow };
