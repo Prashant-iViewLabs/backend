@@ -1,4 +1,6 @@
 const webflowService = require("../services/webflowServices");
+const emailService = require("../services/mailServices");
+
 const child_collection_id = "67976038a0ce992a5e2f0b53";
 const registration_collection_id = "679a175129b5b3c237e7193e";
 const event_collection_id = "6791e81436f04a362036787d";
@@ -36,7 +38,7 @@ const getChildDetails = async (req, res) => {
   }
 };
 
-const addChild = async (req, res) => {
+const addChild = async (req, res, next) => {
   const { body } = req;
   try {
     // Add registration logic here
@@ -45,6 +47,16 @@ const addChild = async (req, res) => {
       body
     );
     res.json(response);
+    console.log("response", response);
+
+    let mailData = {
+      name: body.fieldData.name,
+      parentEmail: body.fieldData["parent-email"],
+      dob: body.fieldData["birth-date"],
+      standard: body.fieldData["standard-2"],
+      schoolName: body.fieldData["school-name"],
+    };
+    emailService.sendAddChildMail(mailData);
   } catch (error) {
     console.error("Error adding registration:", error);
     res.status(500).json({ error: "Failed to add registration" });
@@ -111,15 +123,67 @@ const getMyRegistrations = async (req, res) => {
     let myRegistrations = items.filter(
       (item) => item.fieldData["user-id"] === userId
     );
-    res.json(myRegistrations);
+    let myRegistrationsWithEventDetails = await Promise.all(
+      myRegistrations.map(async (item) => {
+        let eventDetails = await getEventDetailsById(
+          item.fieldData["event-id"]
+        );
+        let childDetails = await getChildDetailsById(
+          item.fieldData["child-ids"]
+        ); // Assuming there's a function to get child details
+
+        return {
+          ...item,
+          eventDetails: eventDetails,
+          childDetails: childDetails,
+        };
+      })
+    );
+
+    res.json(myRegistrationsWithEventDetails);
   } catch (error) {
     console.error("Error fetching CMS items:", error);
     res.status(500).json({ error: "Failed to fetch CMS items" });
   }
 };
 
+const getEventDetailsById = async (eventId) => {
+  let eventDetails = await webflowService.fetchCollectionItemsById(
+    event_collection_id,
+    eventId
+  );
+  let data = {
+    id: eventDetails.id,
+    name: eventDetails.fieldData.name,
+    registrationFee: eventDetails.fieldData["registration-fee"],
+    image: eventDetails.fieldData.image["url"],
+  };
+  return data;
+};
+const getChildDetailsById = async (childIds) => {
+  if (!childIds || childIds.length === 0) return []; // Handle empty or undefined child IDs
+
+  // If childIds is an array, fetch details for each child
+  let childDetails = await Promise.all(
+    childIds.map(async (childId) => {
+      let childData = await webflowService.fetchCollectionItemsById(
+        child_collection_id, // Assuming child details are stored in a separate collection
+        childId
+      );
+
+      return {
+        id: childData.id,
+        name: childData.fieldData.name,
+        standard: childData.fieldData["standard-2"],
+        schoolName: childData.fieldData["school-name"],
+      };
+    })
+  );
+
+  return childDetails;
+};
+
 const addRegistration = async (req, res) => {
-  const { body } = req;
   try {
     // Add registration logic here
     const response = await webflowService.addCollectionItemWebflow(

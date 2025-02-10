@@ -1,6 +1,7 @@
 const Razorpay = require("razorpay");
 
 const { razorpayKey, razorpayKeySecret } = require("../config/config");
+
 const razorpay = new Razorpay({
   key_id: razorpayKey, // Replace with your Razorpay Key ID
   key_secret: razorpayKeySecret, // Replace with your Razorpay Key Secret
@@ -40,7 +41,7 @@ const paymentIntegration = async ({
       email: false,
     },
     callback_url:
-      "/registration-successfull?eventId=" +
+      "https://learners-lab.webflow.io/registration-successfull?eventId=" +
       eventID +
       "&userId=" +
       userID +

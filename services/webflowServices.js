@@ -15,6 +15,11 @@ const fetchCollectionItems = async (collectionId, userEmail) => {
   return response.items;
 };
 
+const fetchCollectionItemsById = async (collectionId, itemId) => {
+  const response = await client.collections.items.getItemLive(collectionId, itemId);
+  return response;
+}
+
 const getUserInfoWebflow = async (siteId, userId) => {
   const response = await client.users.get(siteId, userId);
   return response;
@@ -47,5 +52,6 @@ module.exports = {
   getUserInfoWebflow,
   addCollectionItemWebflow,
   updateCollectionItemWebflow,
-  deleteCollectionItemWebflow
+  deleteCollectionItemWebflow,
+  fetchCollectionItemsById
 };

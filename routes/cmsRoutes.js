@@ -20,7 +20,7 @@ router.get("/events", authenticateToken, cmsController.getEvents);
 router.post(
   "/add-registration",
   authenticateToken,
-  cmsController.addRegistration
+  cmsController.addRegistration,
 );
 router.get(
   "/my-registrations",
