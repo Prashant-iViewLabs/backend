@@ -4,15 +4,33 @@ const cmsController = require("../controllers/cmsController");
 const authenticateToken = require("../middleware/authenticateToken");
 
 router.get(
-  "/items/:collection_id",
+  "/child-details",
   authenticateToken,
-  cmsController.getCmsItems
+  cmsController.getChildDetails
 );
 
 router.post(
-  "/add-registration/:collection_id",
+  "/add-child",
+  authenticateToken,
+  cmsController.addChild
+)
+
+router.post(
+  "/add-registration",
   authenticateToken,
   cmsController.addRegistration
 );
+
+router.get(
+  "/events",
+  authenticateToken,
+  cmsController.getEvents
+);
+
+router.get(
+  "/my-registrations",
+  authenticateToken,
+  cmsController.getMyRegistrations
+)
 
 module.exports = router;
