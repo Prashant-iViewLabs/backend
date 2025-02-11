@@ -161,6 +161,8 @@ const getMyRegistrations = async (req, res) => {
     );
     let myRegistrationsWithEventDetails = await Promise.all(
       myRegistrations.map(async (item) => {
+        console.log(item);
+        
         let eventDetails = await getEventDetailsById(
           item.fieldData["event-id"]
         );
@@ -248,6 +250,22 @@ const deleteRegistration = async (req, res) => {
   }
 };
 
+const cancelRegistration = async (req, res) => {
+  const { registrationId } = req.query.registrationid;
+  const { body } = req;
+  try{
+    const response = await webflowService.updateCollectionItemWebflow(
+      registration_collection_id,
+      registrationId,
+      body
+    )
+    res.json(response)
+  } catch (error) {
+    console.log("Error Cancelling Registration");
+    res.status(500).json({ error: "Failed to cancel registration" });
+  }
+}
+
 // Registration Apis end
 
 module.exports = {
@@ -261,4 +279,5 @@ module.exports = {
   getEvents,
   getEventIdBySlug,
   deleteRegistration,
+  cancelRegistration
 };

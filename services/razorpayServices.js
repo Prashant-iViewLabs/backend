@@ -55,9 +55,9 @@ const paymentIntegration = async ({
   };
   console.log({ paymentLinkOptions });
   // Adding some basic validation checks
-  if (!name || !contactNo || !email) {
-    throw new Error("Customer information is missing or invalid");
-  }
+  // if (!name || !contactNo || !email) {
+  //   throw new Error("Customer information is missing or invalid");
+  // }
   try {
     const response = await razorpay.paymentLink.create(paymentLinkOptions);
     console.log("Payment link created: ", response);

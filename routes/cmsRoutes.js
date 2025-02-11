@@ -36,4 +36,10 @@ router.post(
   cmsController.deleteRegistration,
 )
 
+router.post(
+  "cancel-registration",
+  authenticateToken,
+  cmsController.cancelRegistration
+)
+
 module.exports = router;

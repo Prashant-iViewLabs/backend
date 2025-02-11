@@ -79,18 +79,16 @@ const sendDeleteChildMail = async (body, parentEmail) => {
 
 const sendRegistrationMail = async (body) => {
   try {
-    const { name, email, phone, standard, schoolName } = body;
+    const { registrationId, username, eventName } = body;
 
     const msg = {
       to: user_email, // Change to your recipient email
       from: process.env.SENDGRID_SENDER_EMAIL,
-      template_id: "d-6cacc6dea3d74d4cb4350c127edf9300", // Replace with your SendGrid template ID
+      template_id: "d-a55085e904e64235ab06d3fa81132c31", // Replace with your SendGrid template ID
       dynamic_template_data: {
-        name: name,
-        email: email,
-        phone: phone,
-        standard: standard,
-        schoolName: schoolName,
+        registrationId: registrationId,
+        username: username,
+        eventName: eventName
       },
     };
 
