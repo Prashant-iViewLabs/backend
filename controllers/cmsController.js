@@ -97,14 +97,18 @@ const deleteChild = async (req, res) => {
       child_collection_id,
       childId
     );
-    console.log(response);
     res.json(response);
-    let mailData = {
-      name: body.fieldData.name
-    };
-    emailService.sendDeleteChildMail(mailData, userEmail);
+    // let mailData = {
+    //   name: body.fieldData.name
+    // };
+    // emailService.sendDeleteChildMail(mailData, userEmail);
   } catch (error) {
     let errorMessage = res.json(error);
+    if (error.statusCode === 409) {
+      return res.status(409).json({
+        message: `Cannot delete: This item is still referenced by '${error.body.details[0].conflicts[0].ref.name}' in collection '${error.body.details[0].conflicts[0].ref.collectionName}'.`,
+      });
+    }
     res.status(500).json({ error: "Failed to delete child" + errorMessage });
   }
 };
@@ -215,6 +219,7 @@ const getChildDetailsById = async (childIds) => {
 };
 
 const addRegistration = async (req, res) => {
+  const { body } = req;
   try {
     // Add registration logic here
     const response = await webflowService.addCollectionItemWebflow(
@@ -241,7 +246,7 @@ const deleteRegistration = async (req, res) => {
     console.error("Error adding registration:", error);
     res.status(500).json({ error: "Failed to add registration" });
   }
-}
+};
 
 // Registration Apis end
 
@@ -255,8 +260,5 @@ module.exports = {
   getMyRegistrations,
   getEvents,
   getEventIdBySlug,
-  deleteRegistration
+  deleteRegistration,
 };
-
-
-

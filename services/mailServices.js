@@ -54,7 +54,6 @@ const sendEditChildMail = async (body, parentEmail) => {
     return { success: true, message: "Email sent successfully!" };
   } catch (error) {
     console.error("SendGrid Error:", error.response?.body || error);
-    res.status(500).json({ success: false, error: "Failed to send email." });
   }
 };
 
@@ -75,7 +74,6 @@ const sendDeleteChildMail = async (body, parentEmail) => {
     return { success: true, message: "Email sent successfully!" };
   } catch (error) {
     console.error("SendGrid Error:", error.response?.body || error);
-    res.status(500).json({ success: false, error: "Failed to send email." });
   }
 };
 
