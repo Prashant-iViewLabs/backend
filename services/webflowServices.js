@@ -16,9 +16,18 @@ const fetchCollectionItems = async (collectionId, userEmail) => {
 };
 
 const fetchCollectionItemsById = async (collectionId, itemId) => {
-  const response = await client.collections.items.getItemLive(collectionId, itemId);
+  const response = await client.collections.items.getItemLive(
+    collectionId,
+    itemId
+  );
   return response;
-}
+};
+const fetchCollectionItemsBySlug = async (collectionId, slug) => {
+  const response = await client.collections.items.listItemsLive(collectionId, {
+    slug: slug,
+  });
+  return response;
+};
 
 const getUserInfoWebflow = async (siteId, userId) => {
   const response = await client.users.get(siteId, userId);
@@ -39,6 +48,7 @@ const updateCollectionItemWebflow = async (collection_id, item_id, body) => {
     item_id,
     body
   );
+  return response;
 };
 
 const deleteCollectionItemWebflow = async (collection_id, item_id) => {
@@ -46,6 +56,7 @@ const deleteCollectionItemWebflow = async (collection_id, item_id) => {
     collection_id,
     item_id
   );
+  return response;
 };
 module.exports = {
   fetchCollectionItems,
@@ -53,5 +64,6 @@ module.exports = {
   addCollectionItemWebflow,
   updateCollectionItemWebflow,
   deleteCollectionItemWebflow,
-  fetchCollectionItemsById
+  fetchCollectionItemsById,
+  fetchCollectionItemsBySlug
 };

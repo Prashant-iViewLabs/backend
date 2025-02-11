@@ -64,7 +64,10 @@ const addChild = async (req, res, next) => {
 };
 
 const updateChild = async (req, res) => {
-  const { body, id } = req;
+  const { body } = req;
+  const id = req.query.childid;
+  console.log(body, id);
+
   try {
     const response = await webflowService.updateCollectionItemWebflow(
       child_collection_id,
@@ -72,6 +75,14 @@ const updateChild = async (req, res) => {
       body
     );
     res.json(response);
+    let mailData = {
+      name: body.fieldData.name,
+      parentEmail: body.fieldData["parent-email"],
+      dob: body.fieldData["birth-date"],
+      standard: body.fieldData["standard-2"],
+      schoolName: body.fieldData["school-name"],
+    };
+    emailService.sendEditChildMail(mailData);
   } catch (error) {
     console.error("Error updating child:", error);
     res.status(500).json({ error: "Failed to update child" });
@@ -80,14 +91,26 @@ const updateChild = async (req, res) => {
 
 const deleteChild = async (req, res) => {
   const childId = req.query.childid;
+  console.log("childId", childId);
+
   try {
     const response = await webflowService.deleteCollectionItemWebflow(
       child_collection_id,
       childId
     );
+    console.log(response);
     res.json(response);
+    let mailData = {
+      name: body.fieldData.name,
+      parentEmail: body.fieldData["parent-email"],
+      dob: body.fieldData["birth-date"],
+      standard: body.fieldData["standard-2"],
+      schoolName: body.fieldData["school-name"],
+    };
+    emailService.sendDeleteChildMail(mailData);
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete child" });
+    let errorMessage = res.json(error);
+    res.status(500).json({ error: "Failed to delete child" + errorMessage });
   }
 };
 
@@ -105,6 +128,20 @@ const getEvents = async (req, res) => {
       (item) => item.fieldData["event-status"] === eventStatus
     );
     res.json(eventStatusItems);
+  } catch (error) {
+    console.error("Error fetching CMS items:", error);
+    res.status(500).json({ error: "Failed to fetch CMS items" });
+  }
+};
+
+const getEventIdBySlug = async (req, res) => {
+  let slug = req.query.slug;
+  try {
+    const items = await webflowService.fetchCollectionItemsBySlug(
+      event_collection_id,
+      slug
+    );
+    res.json({ eventId: items.items[0].id });
   } catch (error) {
     console.error("Error fetching CMS items:", error);
     res.status(500).json({ error: "Failed to fetch CMS items" });
@@ -208,4 +245,5 @@ module.exports = {
   addRegistration,
   getMyRegistrations,
   getEvents,
+  getEventIdBySlug,
 };
