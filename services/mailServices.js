@@ -33,12 +33,12 @@ const sendAddChildMail = async (body) => {
   }
 };
 
-const sendEditChildMail = async (body) => {
+const sendEditChildMail = async (body, parentEmail) => {
   try {
     const { name, dob, standard, schoolName } = body;
 
     const msg = {
-      to: user_email, // Change to your recipient email
+      to: parentEmail, // Change to your recipient email
       from: process.env.SENDGRID_SENDER_EMAIL,
       template_id: "d-6cacc6dea3d74d4cb4350c127edf9300", // Replace with your SendGrid template ID
       dynamic_template_data: {
@@ -59,7 +59,57 @@ const sendEditChildMail = async (body) => {
   }
 };
 
-const sendDeleteChildMail = async (body) => {
+const sendDeleteChildMail = async (body, parentEmail) => {
+  try {
+    const { name } = body;
+
+    const msg = {
+      to: parentEmail, // Change to your recipient email
+      from: process.env.SENDGRID_SENDER_EMAIL,
+      template_id: "d-1139013fbc254fec98769400fd427efd", // Replace with your SendGrid template ID
+      dynamic_template_data: {
+        name: name,
+      },
+    };
+
+    await sgMail.send(msg);
+    res
+      .status(200)
+      .json({ success: true, message: "Email sent successfully!" });
+  } catch (error) {
+    console.error("SendGrid Error:", error.response?.body || error);
+    res.status(500).json({ success: false, error: "Failed to send email." });
+  }
+};
+
+const sendRegistrationMail = async (body) => {
+  try {
+    const { name, email, phone, standard, schoolName } = body;
+
+    const msg = {
+      to: user_email, // Change to your recipient email
+      from: process.env.SENDGRID_SENDER_EMAIL,
+      template_id: "d-6cacc6dea3d74d4cb4350c127edf9300", // Replace with your SendGrid template ID
+      dynamic_template_data: {
+        name: name,
+        email: email,
+        phone: phone,
+        standard: standard,
+        schoolName: schoolName,
+      },
+    };
+
+    await sgMail.send(msg);
+    res
+      .status(200)
+      .json({ success: true, message: "Email sent successfully!" });
+  } catch (error) {
+    console.error("SendGrid Error:", error.response?.body || error);
+    res.status(500).json({ success: false, error: "Failed to send email." });
+  }
+};
+
+const sendCancelRegistrationMail = async (body) => {
   try {
     const { name } = body;
 
@@ -82,4 +132,10 @@ const sendDeleteChildMail = async (body) => {
   }
 };
 
-module.exports = { sendAddChildMail, sendEditChildMail, sendDeleteChildMail };
+module.exports = {
+  sendAddChildMail,
+  sendEditChildMail,
+  sendDeleteChildMail,
+  sendRegistrationMail,
+  sendCancelRegistrationMail,
+};

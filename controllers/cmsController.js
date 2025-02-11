@@ -77,12 +77,11 @@ const updateChild = async (req, res) => {
     res.json(response);
     let mailData = {
       name: body.fieldData.name,
-      parentEmail: body.fieldData["parent-email"],
       dob: body.fieldData["birth-date"],
       standard: body.fieldData["standard-2"],
       schoolName: body.fieldData["school-name"],
     };
-    emailService.sendEditChildMail(mailData);
+    emailService.sendEditChildMail(mailData, body.fieldData["parent-email"]);
   } catch (error) {
     console.error("Error updating child:", error);
     res.status(500).json({ error: "Failed to update child" });
@@ -92,7 +91,7 @@ const updateChild = async (req, res) => {
 const deleteChild = async (req, res) => {
   const childId = req.query.childid;
   console.log("childId", childId);
-
+  const userEmail = req.headers["useremail"];
   try {
     const response = await webflowService.deleteCollectionItemWebflow(
       child_collection_id,
@@ -101,13 +100,9 @@ const deleteChild = async (req, res) => {
     console.log(response);
     res.json(response);
     let mailData = {
-      name: body.fieldData.name,
-      parentEmail: body.fieldData["parent-email"],
-      dob: body.fieldData["birth-date"],
-      standard: body.fieldData["standard-2"],
-      schoolName: body.fieldData["school-name"],
+      name: body.fieldData.name
     };
-    emailService.sendDeleteChildMail(mailData);
+    emailService.sendDeleteChildMail(mailData, userEmail);
   } catch (error) {
     let errorMessage = res.json(error);
     res.status(500).json({ error: "Failed to delete child" + errorMessage });
@@ -183,7 +178,6 @@ const getMyRegistrations = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch CMS items" });
   }
 };
-
 const getEventDetailsById = async (eventId) => {
   let eventDetails = await webflowService.fetchCollectionItemsById(
     event_collection_id,
@@ -234,6 +228,21 @@ const addRegistration = async (req, res) => {
   }
 };
 
+const deleteRegistration = async (req, res) => {
+  const { registrationId } = req.query.registrationid;
+  try {
+    // Add registration logic here
+    const response = await webflowService.deleteCollectionItemWebflow(
+      registration_collection_id,
+      registrationId
+    );
+    res.json(response);
+  } catch (error) {
+    console.error("Error adding registration:", error);
+    res.status(500).json({ error: "Failed to add registration" });
+  }
+}
+
 // Registration Apis end
 
 module.exports = {
@@ -246,4 +255,8 @@ module.exports = {
   getMyRegistrations,
   getEvents,
   getEventIdBySlug,
+  deleteRegistration
 };
+
+
+

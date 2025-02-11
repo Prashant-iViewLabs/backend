@@ -30,4 +30,10 @@ router.get(
   cmsController.getMyRegistrations
 );
 
+router.post(
+  "/delete-registration",
+  authenticateToken,
+  cmsController.deleteRegistration,
+)
+
 module.exports = router;
