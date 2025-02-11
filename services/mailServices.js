@@ -24,6 +24,7 @@ const sendAddChildMail = async (body) => {
     };
 
     await sgMail.send(msg);
+    return { success: true, message: "Email sent successfully!" };
     // res
     //   .status(200)
     //   .json({ success: true, message: "Email sent successfully!" });
@@ -50,9 +51,7 @@ const sendEditChildMail = async (body, parentEmail) => {
     };
 
     await sgMail.send(msg);
-    res
-      .status(200)
-      .json({ success: true, message: "Email sent successfully!" });
+    return { success: true, message: "Email sent successfully!" };
   } catch (error) {
     console.error("SendGrid Error:", error.response?.body || error);
     res.status(500).json({ success: false, error: "Failed to send email." });
@@ -73,9 +72,7 @@ const sendDeleteChildMail = async (body, parentEmail) => {
     };
 
     await sgMail.send(msg);
-    res
-      .status(200)
-      .json({ success: true, message: "Email sent successfully!" });
+    return { success: true, message: "Email sent successfully!" };
   } catch (error) {
     console.error("SendGrid Error:", error.response?.body || error);
     res.status(500).json({ success: false, error: "Failed to send email." });
