@@ -92,24 +92,28 @@ const deleteChild = async (req, res) => {
   const childId = req.query.childid;
   console.log("childId", childId);
   const userEmail = req.headers["useremail"];
+
   try {
     const response = await webflowService.deleteCollectionItemWebflow(
       child_collection_id,
       childId
     );
+
     res.json(response);
-    // let mailData = {
-    //   name: body.fieldData.name
-    // };
+
+    // Uncomment and modify as needed
+    // let mailData = { name: response.fieldData.name };
     // emailService.sendDeleteChildMail(mailData, userEmail);
   } catch (error) {
-    let errorMessage = res.json(error);
+    console.error("Delete error:", error);
+
     if (error.statusCode === 409) {
       return res.status(409).json({
         message: `Cannot delete: This item is still referenced by '${error.body.details[0].conflicts[0].ref.name}' in collection '${error.body.details[0].conflicts[0].ref.collectionName}'.`,
       });
     }
-    res.status(500).json({ error: "Failed to delete child" + errorMessage });
+
+    res.status(500).json({ error: "Failed to delete child" });
   }
 };
 
@@ -162,7 +166,7 @@ const getMyRegistrations = async (req, res) => {
     let myRegistrationsWithEventDetails = await Promise.all(
       myRegistrations.map(async (item) => {
         console.log(item);
-        
+
         let eventDetails = await getEventDetailsById(
           item.fieldData["event-id"]
         );
@@ -253,18 +257,18 @@ const deleteRegistration = async (req, res) => {
 const cancelRegistration = async (req, res) => {
   const { registrationId } = req.query.registrationid;
   const { body } = req;
-  try{
+  try {
     const response = await webflowService.updateCollectionItemWebflow(
       registration_collection_id,
       registrationId,
       body
-    )
-    res.json(response)
+    );
+    res.json(response);
   } catch (error) {
     console.log("Error Cancelling Registration");
     res.status(500).json({ error: "Failed to cancel registration" });
   }
-}
+};
 
 // Registration Apis end
 
@@ -279,5 +283,5 @@ module.exports = {
   getEvents,
   getEventIdBySlug,
   deleteRegistration,
-  cancelRegistration
+  cancelRegistration,
 };
