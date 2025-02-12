@@ -78,7 +78,9 @@ const updateChild = async (req, res) => {
       standard: body.fieldData["standard-2"],
       schoolName: body.fieldData["school-name"],
     };
-    emailService.sendEditChildMail(mailData, body.fieldData["parent-email"]);
+    let mailResponse = await emailService.sendEditChildMail(mailData, body.fieldData["parent-email"]);
+    console.log(mailResponse);
+    
   } catch (error) {
     console.error("Error updating child:", error);
     res.status(500).json({ error: "Failed to update child" });
