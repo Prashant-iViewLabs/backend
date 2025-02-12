@@ -97,9 +97,9 @@ const deleteChild = async (req, res) => {
 
     res.json(response);
 
-    // Uncomment and modify as needed
-    let mailData = { name: response.fieldData.name };
-    emailService.sendDeleteChildMail(mailData, userEmail);
+    // // Uncomment and modify as needed
+    // let mailData = { name: response.fieldData.name };
+    // emailService.sendDeleteChildMail(mailData, userEmail);
   } catch (error) {
     console.error("Delete error:", error);
 
