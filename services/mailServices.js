@@ -6,7 +6,6 @@ sgMail.setApiKey(sendgridApiKey);
 
 const sendAddChildMail = async (body) => {
   try {
-    console.log("maily body", body);
 
     const { name, parentEmail, dob, standard, schoolName } = body;
 
@@ -77,7 +76,7 @@ const sendDeleteChildMail = async (body, parentEmail) => {
   }
 };
 
-const sendRegistrationMail = async (body) => {
+const sendRegistrationMail = async (body, user_email) => {
   try {
     const { registrationId, username, eventName } = body;
 
@@ -93,12 +92,8 @@ const sendRegistrationMail = async (body) => {
     };
 
     await sgMail.send(msg);
-    res
-      .status(200)
-      .json({ success: true, message: "Email sent successfully!" });
   } catch (error) {
     console.error("SendGrid Error:", error.response?.body || error);
-    res.status(500).json({ success: false, error: "Failed to send email." });
   }
 };
 
@@ -116,12 +111,8 @@ const sendCancelRegistrationMail = async (body) => {
     };
 
     await sgMail.send(msg);
-    res
-      .status(200)
-      .json({ success: true, message: "Email sent successfully!" });
   } catch (error) {
     console.error("SendGrid Error:", error.response?.body || error);
-    res.status(500).json({ success: false, error: "Failed to send email." });
   }
 };
 

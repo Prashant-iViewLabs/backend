@@ -47,7 +47,6 @@ const addChild = async (req, res, next) => {
       body
     );
     res.json(response);
-    console.log("response", response);
 
     let mailData = {
       name: body.fieldData.name,
@@ -66,8 +65,6 @@ const addChild = async (req, res, next) => {
 const updateChild = async (req, res) => {
   const { body } = req;
   const id = req.query.childid;
-  console.log(body, id);
-
   try {
     const response = await webflowService.updateCollectionItemWebflow(
       child_collection_id,
@@ -90,7 +87,6 @@ const updateChild = async (req, res) => {
 
 const deleteChild = async (req, res) => {
   const childId = req.query.childid;
-  console.log("childId", childId);
   const userEmail = req.headers["useremail"];
 
   try {
@@ -102,8 +98,8 @@ const deleteChild = async (req, res) => {
     res.json(response);
 
     // Uncomment and modify as needed
-    // let mailData = { name: response.fieldData.name };
-    // emailService.sendDeleteChildMail(mailData, userEmail);
+    let mailData = { name: response.fieldData.name };
+    emailService.sendDeleteChildMail(mailData, userEmail);
   } catch (error) {
     console.error("Delete error:", error);
 
@@ -121,7 +117,6 @@ const deleteChild = async (req, res) => {
 // Event Apis start
 const getEvents = async (req, res) => {
   let eventStatus = req.query.eventstatus;
-  console.log(eventStatus);
 
   try {
     const items = await webflowService.fetchCollectionItems(
@@ -179,8 +174,6 @@ const getMyRegistrations = async (req, res) => {
     );
     let myRegistrationsWithEventDetails = await Promise.all(
       myRegistrations.map(async (item) => {
-        console.log(item);
-
         let eventDetails = await getEventDetailsById(
           item.fieldData["event-id"]
         );
@@ -240,6 +233,7 @@ const getChildDetailsById = async (childIds) => {
 
 const addRegistration = async (req, res) => {
   const { body } = req;
+  const userEmail = req.headers["useremail"];
   try {
     // Add registration logic here
     const response = await webflowService.addCollectionItemWebflow(
@@ -247,6 +241,12 @@ const addRegistration = async (req, res) => {
       body
     );
     res.json(response);
+    let registrationMailData = {
+      registrationId: response.id,
+      username: response.fieldData.name,
+      eventName: response.fieldData["event-title"],
+    };
+    emailService.sendRegistrationMail(registrationMailData, userEmail);
   } catch (error) {
     console.error("Error adding registration:", error);
     res.status(500).json({ error: "Failed to add registration" });
@@ -279,7 +279,6 @@ const cancelRegistration = async (req, res) => {
     );
     res.json(response);
   } catch (error) {
-    console.log("Error Cancelling Registration");
     res.status(500).json({ error: "Failed to cancel registration" });
   }
 };

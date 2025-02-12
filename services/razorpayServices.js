@@ -53,14 +53,12 @@ const paymentIntegration = async ({
       groupSize,
     callback_method: "get",
   };
-  console.log({ paymentLinkOptions });
   // Adding some basic validation checks
   // if (!name || !contactNo || !email) {
   //   throw new Error("Customer information is missing or invalid");
   // }
   try {
     const response = await razorpay.paymentLink.create(paymentLinkOptions);
-    console.log("Payment link created: ", response);
     return response.short_url;
   } catch (error) {
     console.error("Error creating payment link: ", error);
@@ -71,11 +69,6 @@ const paymentIntegration = async ({
 
 
 const paymentRefund = async ({ amount, service, paymentId }) => {
-  console.log({
-    amount,
-    service,
-    paymentId,
-  });
   const paymentLinkOptions = {
     amount: amount * 100,
     speed: "normal",
@@ -84,13 +77,11 @@ const paymentRefund = async ({ amount, service, paymentId }) => {
     },
     receipt: paymentId,
   };
-  console.log({ paymentLinkOptions });
   try {
     const response = await razorpay.payments.refund(
       paymentId,
       paymentLinkOptions
     );
-    console.log("Refund link created: ", response);
     return response;
     // return response.short_url;
   } catch (error) {
