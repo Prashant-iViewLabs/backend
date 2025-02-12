@@ -39,7 +39,7 @@ router.post(
 )
 
 router.post(
-  "cancel-registration",
+  "/cancel-registration",
   authenticateToken,
   cmsController.cancelRegistration
 )
