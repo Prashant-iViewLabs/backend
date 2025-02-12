@@ -271,8 +271,10 @@ const deleteRegistration = async (req, res) => {
 };
 
 const cancelRegistration = async (req, res) => {
-  const { registrationId } = req.query.registrationid;
+  const registrationId = req.query.registrationid;
   const { body } = req;
+  console.log(registrationId, body);
+  
   try {
     const response = await webflowService.updateCollectionItemWebflow(
       registration_collection_id,
