@@ -137,6 +137,20 @@ const getEvents = async (req, res) => {
   }
 };
 
+const getEventById = async (req, res) => {
+  const eventId = req.query["event-id"]; // or req.params.eventId if using "eventId"
+  try {
+    const items = await webflowService.fetchCollectionItemsById(
+      event_collection_id,
+      eventId
+    );
+    res.json(items);
+  } catch (error) {
+    console.error("Error fetching CMS items:", error);
+    res.status(500).json({ error: "Failed to fetch CMS items" });
+  }
+};
+
 const getEventIdBySlug = async (req, res) => {
   let slug = req.query.slug;
   try {
@@ -281,6 +295,7 @@ module.exports = {
   addRegistration,
   getMyRegistrations,
   getEvents,
+  getEventById,
   getEventIdBySlug,
   deleteRegistration,
   cancelRegistration,

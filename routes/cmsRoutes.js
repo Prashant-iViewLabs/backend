@@ -16,6 +16,8 @@ router.post("/delete-child", authenticateToken, cmsController.deleteChild);
 
 router.get("/events", authenticateToken, cmsController.getEvents);
 
+router.get("/get-event", authenticateToken, cmsController.getEventById)
+
 router.get("/event-slug", authenticateToken, cmsController.getEventIdBySlug);
 
 // Registration Routes
